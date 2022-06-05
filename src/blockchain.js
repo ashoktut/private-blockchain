@@ -136,7 +136,7 @@ class Blockchain {
 
       // Checks if message is sent within 5 minutes
       if (currTime - msgTime <= 300) {
-        let isValid = bitcoinMessage.verify(address, message, signature);
+        let isValid = bitcoinMessage.verify(address, message, signature, null, true);
 
         // if isValid = true
         if (isValid) {
