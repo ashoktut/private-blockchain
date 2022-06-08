@@ -145,7 +145,7 @@ class Blockchain {
         // if isValid = true
         if (isValid) {
           // Create new block if valid
-          let block = new BlockClass.Block({owner: address, star: star});
+          let block = new BlockClass.Block({address: address, star: star});
           let newBlock = await self._addBlock(block);
           resolve(newBlock);
         } else {
@@ -203,11 +203,12 @@ class Blockchain {
   getStarsByWalletAddress(address) {
     let self = this;
     let stars = [];
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
       // Loop through each block
-      self.chain.forEach((block) => {
+      self.chain.forEach(async(block) => {
         // Get decoded block data
-        let data = block.getBData();
+        let data = await block.getBData();
+        console.log(data);
 
         // If there is a matching owner by the address,
         // add the decoded block data to the list and return
