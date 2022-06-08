@@ -88,7 +88,7 @@ class Blockchain {
         self.chain.push(block);
         self.height = self.chain.length - 1;
         resolve(block);
-      }
+      } reject("error"); // <- added this reject
     });
   }
 
@@ -134,22 +134,26 @@ class Blockchain {
       let msgTime = parseInt(message.split(":")[1]);
       let currTime = parseInt(new Date().getTime().toString().slice(0, -3));
 
+      // check if current time and msg time are working
+      console.log(msgTime);
+      console.log(currTime);
+
       // Checks if message is sent within 5 minutes
-      if (currTime - msgTime <= 300) {
-        let isValid = bitcoinMessage.verify(address, message, signature, null, true);
+      if ((currTime - msgTime) <= (5 * 60)) {
+        const isValid = bitcoinMessage.verify(message, address, signature, null, true);
 
         // if isValid = true
         if (isValid) {
           // Create new block if valid
-          let block = new BlockClass.Block({ address: address, star: star });
+          let block = new BlockClass.Block({owner: address, star: star});
           let newBlock = await self._addBlock(block);
           resolve(newBlock);
         } else {
           // error msg
-          reject("Invalid Signature");
+          reject(new Error("Invalid Signature"));
         }
       } else {
-        reject("Time limit of 5 minutes exceeded");
+        reject(new Error("Time limit of 5 minutes exceeded"));
       }
     });
   }
